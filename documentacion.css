@@ -1,0 +1,287 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.7;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo span {
+            color: #0ea5e9;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            color: #0f172a;
+            margin-top: 1rem;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        h2 {
+            font-size: 1.375rem;
+            color: #0f172a;
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #0ea5e9;
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 1.125rem;
+            color: #334155;
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #475569;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-left: 4px solid #0ea5e9;
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+
+        .highlight-box h4 {
+            color: #0369a1;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fefce8, #fef9c3);
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box h4 {
+            color: #b45309;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        code {
+            background: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.875rem;
+            color: #7c3aed;
+        }
+
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0 1.5rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.8125rem;
+            line-height: 1.6;
+        }
+
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+
+        .code-comment {
+            color: #64748b;
+        }
+
+        .code-string {
+            color: #22c55e;
+        }
+
+        .code-key {
+            color: #38bdf8;
+        }
+
+        .code-number {
+            color: #f59e0b;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0 1.5rem;
+            font-size: 0.875rem;
+        }
+
+        th,
+        td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-required {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .badge-optional {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .flow-diagram {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .flow-number {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .flow-content h4 {
+            color: #0f172a;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .flow-content p {
+            margin-bottom: 0;
+            font-size: 0.9375rem;
+        }
+
+        .footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .print-btn {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 2rem auto;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3);
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 1rem;
+            }
+
+            .print-btn {
+                display: none;
+            }
+
+            pre {
+                white-space: pre-wrap;
+                word-wrap: break-word;
+            }
+        }
+
+.no-margin{ margin-bottom: 0; }
+.doc-list{ margin-left: 2rem; color: #475569; }

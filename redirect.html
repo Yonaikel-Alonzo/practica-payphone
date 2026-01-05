@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procesando pago | VehículoStore</title>
+    <meta name="description" content="Procesando tu pago con Payphone" />
+    <meta name="theme-color" content="#0f1322" />
+    <meta name="color-scheme" content="dark" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="redirect.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="spinner" id="spinner"></div>
+        <h1 id="title">Procesando tu pago...</h1>
+        <p id="message">Verificando transacción con PayPhone</p>
+        <div class="info" id="info">Por favor espera...</div>
+        <a href="respuesta.html" id="manual-btn" class="btn hidden">Continuar manualmente</a>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        const clientTxId = urlParams.get('clientTransactionId');
+
+        const titleEl = document.getElementById('title');
+        const messageEl = document.getElementById('message');
+        const infoEl = document.getElementById('info');
+        const spinnerEl = document.getElementById('spinner');
+        const btnEl = document.getElementById('manual-btn');
+
+        if (id && clientTxId) {
+            infoEl.textContent = `Transacción #${id} detectada`;
+
+            const redirectUrl = `respuesta.html?id=${encodeURIComponent(id)}&clientTransactionId=${encodeURIComponent(clientTxId)}`;
+            btnEl.href = redirectUrl;
+
+            setTimeout(() => {
+                infoEl.textContent = 'Redirigiendo...';
+                window.location.href = redirectUrl;
+            }, 1500);
+
+            // Fallback
+            setTimeout(() => {
+                spinnerEl.style.display = 'none';
+                btnEl.style.display = 'inline-block';
+                infoEl.textContent = 'Si no te redirige automáticamente, haz clic en el botón.';
+            }, 4000);
+        } else {
+            spinnerEl.style.display = 'none';
+            titleEl.textContent = 'No hay datos de transacción';
+            messageEl.textContent = 'No se encontraron parámetros de pago';
+            infoEl.classList.add('error');
+            infoEl.textContent = 'Regresa a la tienda para intentar nuevamente';
+            btnEl.href = 'index.html';
+            btnEl.textContent = 'Ir a la tienda';
+            btnEl.style.display = 'inline-block';
+        }
+    </script>
+</body>
+
+</html>

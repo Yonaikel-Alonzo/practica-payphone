@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VehículoStore — Autos, motos, repuestos y servicios</title>
+
+  <meta name="description" content="Compra autos, motos, repuestos, accesorios y servicios. Paga en línea con Payphone." />
+  <meta name="theme-color" content="#0f1322" />
+  <meta name="color-scheme" content="dark" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Payphone Payment Box (oficial) -->
+  <link rel="stylesheet" href="https://cdn.payphonetodoesposible.com/box/v1.1/payphone-payment-box.css" />
+  <script type="module" src="https://cdn.payphonetodoesposible.com/box/v1.1/payphone-payment-box.js"></script>
+  <!-- ↑ URLs tomadas de la doc oficial de Payphone -->
+  <!---->
+
+  <link rel="stylesheet" href="./index.css" />
+</head>
+
+<body>
+  <a class="skip-link" href="#catalogo">Saltar al catálogo</a>
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"><span class="logo-dot"></span></div>
+      <div class="brand-text">
+        <div class="brand-title">VehículoStore</div>
+        <div class="brand-subtitle">Autos, motos, repuestos y servicios</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a href="#catalogo">Catálogo</a>
+      <a href="#servicios">Servicios</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+
+    <button id="cart-button" class="icon-btn" aria-label="Abrir carrito">
+      🛒 <span id="cart-count" class="badge">0</span>
+    </button>
+  </header>
+
+  <main class="container">
+    <!-- HERO -->
+    <section class="hero" id="top">
+      <div class="hero-left">
+        <h1>Todo para tu vehículo, en un solo lugar.</h1>
+        <p class="muted">
+          Catálogo de vehículos, accesorios, repuestos y servicios. 
+        </p>
+
+        <div class="chips" aria-label="Beneficios">
+          <span class="chip">✅ Pago seguro</span>
+          <span class="chip">🚚 Entrega coordinada</span>
+          <span class="chip">🧾 Facturación</span>
+          <span class="chip">🛠️ Servicios rápidos</span>
+        </div>
+
+        <div class="note">
+          Tip: agrega productos al carrito, revisa tu total y luego presiona <b>Ir a pagar</b>.
+        </div>
+
+<div class="hero-actions">
+          <a class="btn primary" href="#catalogo">Ver catálogo</a>
+          <a class="btn ghost" href="#servicios">Ver servicios</a>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="hero-card">
+          <div class="hero-card-title">Total</div>
+          <div class="hero-mini">
+            <div class="mini-row"><span>Total</span><span class="mini-strong" id="mini-total">$0.00</span></div>
+            <div class="mini-row"><span>IVA</span><span class="mini-strong" id="mini-tax">$0.00</span></div>
+          </div>
+
+          <a class="btn primary full" href="#catalogo">Agregar productos</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FILTROS -->
+    <section class="section" id="catalogo">
+      <div class="section-head">
+        <h2>Catálogo</h2>
+
+        <div class="filters">
+          <button class="filter-btn active" data-filter="all">Todo</button>
+          <button class="filter-btn" data-filter="autos">Autos</button>
+          <button class="filter-btn" data-filter="motos">Motos</button>
+          <button class="filter-btn" data-filter="accesorios">Accesorios</button>
+          <button class="filter-btn" data-filter="repuestos">Repuestos</button>
+        </div>
+      </div>
+
+      <div id="products-grid" class="grid"></div>
+    </section>
+
+    <!-- SERVICIOS / BANNER -->
+    <section class="section" id="servicios">
+      <div class="banner">
+        <div>
+          <div class="banner-title">Servicios rápidos</div>
+          <div class="muted">
+            Lavado premium, cambio de aceite, revisión general y más (puedes agregarlos como productos categoría “servicios” si quieres).
+          </div>
+        </div>
+        <a class="btn ghost" href="#contacto">Pedir información</a>
+      </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section class="section" id="contacto">
+      <div class="contact card">
+        <h2>Contacto</h2>
+        <p class="muted">Déjanos tu mensaje y te contactamos.</p>
+
+        <form id="contact-form" class="form">
+          <div class="row2">
+            <input class="input" placeholder="Tu nombre" required />
+            <input class="input" placeholder="Tu correo" type="email" required />
+          </div>
+          <textarea class="input" rows="4" placeholder="Mensaje..." required></textarea>
+          <button class="btn primary" type="submit">Enviar</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- OVERLAY + CART SIDEBAR -->
+  <div id="cart-overlay" class="overlay"></div>
+
+  <aside id="cart-sidebar" class="cart">
+    <div class="cart-head">
+      <div>
+        <div class="cart-title">Tu carrito</div>
+        <div class="muted small">Revisa productos y cantidades</div>
+      </div>
+
+      <button id="cart-close" class="icon-btn" aria-label="Cerrar">✕</button>
+    </div>
+
+    <div id="cart-items" class="cart-items"></div>
+
+    <div id="cart-warning" class="cart-warning"></div>
+
+    <div class="cart-totals">
+      <div class="total-row"><span class="muted">Subtotal</span><span id="cart-subtotal">$0.00</span></div>
+      <div class="total-row"><span class="muted">IVA</span><span id="cart-tax">$0.00</span></div>
+      <div class="total-row grand"><span>Total</span><span id="cart-total">$0.00</span></div>
+    </div>
+
+    <button id="checkout-btn" class="btn primary full" disabled>
+      Ir a pagar
+    </button>
+  </aside>
+
+  <!-- MODAL PAGO -->
+  <div id="payment-modal" class="modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <div class="modal-title">Confirmar pago</div>
+          <div class="muted small">Se abrirá la cajita segura de Payphone dentro de esta ventana.</div>
+        </div>
+        <button id="modal-close" class="icon-btn" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-grid">
+          <div class="panel">
+            <div class="panel-title">Resumen</div>
+            <div id="order-items" class="order-items"></div>
+
+            <div class="divider"></div>
+
+            <div class="totals">
+              <div class="total-row"><span class="muted">Subtotal</span><span id="order-subtotal">$0.00</span></div>
+              <div class="total-row"><span class="muted">IVA</span><span id="order-tax">$0.00</span></div>
+              <div class="total-row grand"><span>Total</span><span id="order-total">$0.00</span></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-title">Payphone</div>
+            <div class="pp-wrap">
+              <div id="pp-button"></div>
+              <p class="muted small">
+                Si no confirmas la transacción a tiempo, Payphone puede reversarla automáticamente.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast">
+    <div class="toast-inner">
+      <span class="toast-dot"></span>
+      <span id="toast-message">Listo</span>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+
+  <!-- Bonus: mini total en hero (solo UI, no rompe tu app) -->
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="muted">© <span id="year"></span> VehículoStore — Pago con Payphone</div>
+      <div class="footer-links">
+        <a href="#top">Inicio</a>
+        <a href="#catalogo">Catálogo</a>
+        <a href="documentacion.html">Documentación</a>
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // lee los totales del DOM que tu JS ya actualiza
+    const syncMini = () => {
+      const t = document.getElementById('cart-total')?.textContent || '$0.00';
+      const iv = document.getElementById('cart-tax')?.textContent || '$0.00';
+      const a = document.getElementById('mini-total');
+      const b = document.getElementById('mini-tax');
+      if (a) a.textContent = t;
+      if (b) b.textContent = iv;
+    };
+    setInterval(syncMini, 400);
+  </script>
+</body>
+</html>

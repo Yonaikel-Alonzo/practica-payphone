@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resultado del Pago | VehículoStore</title>
+  <meta name="description" content="Resultado de tu transacción en VehículoStore" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="respuesta.css" />
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav container">
+      <a href="index.html" class="brand-link">
+        <div class="brand-mark" aria-hidden="true"><span class="brand-dot"></span></div>
+        <span class="brand-text">VehículoStore</span>
+      </a>
+    </nav>
+  </header>
+
+  <main class="response-page">
+    <div class="response-wrap">
+      <div class="response-grid">
+
+        <!-- CARD PRINCIPAL -->
+        <section class="response-card">
+          <div class="response-hero" id="response-header">
+            <div class="hero-row">
+              <div class="hero-icon" id="response-icon">⏳</div>
+              <div>
+                <h1 class="hero-title" id="response-title">Procesando pago…</h1>
+                <p class="hero-subtitle" id="response-message">Confirmando tu transacción con PayPhone</p>
+                <div class="badge info" id="status-badge">• Verificando</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="response-body">
+            <div class="kv" id="details-content">
+              <div class="kv-row">
+                <span class="kv-label">Estado</span>
+                <span class="kv-value">Verificando…</span>
+              </div>
+            </div>
+
+            <div class="actions">
+              <a href="index.html" class="btn btn-secondary">Volver a la tienda</a>
+              <button class="btn btn-primary" id="action-btn" style="display:none;">Descargar comprobante</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- LATERAL -->
+        <aside class="response-card side-card">
+          <h3 class="side-title">📋 Registro</h3>
+          <div class="soft log-entries" id="log-entries"></div>
+
+          <details class="accordion">
+            <summary>📄 Ver respuesta JSON (Confirm)</summary>
+            <div class="soft" style="margin-top:.75rem;">
+              <pre class="json" id="json-content">{}</pre>
+            </div>
+          </details>
+
+          <div id="manual-form-container" class="soft manual-form hidden">
+            <h4 class="manual-title">📲 Verificación manual</h4>
+            <p class="manual-hint">
+              Si no llegaron parámetros en la URL, ingresa el ID de PayPhone:
+            </p>
+
+            <input id="manual-tx-id" placeholder="ID PayPhone (ej: 731165338)"
+              class="manual-input" />
+
+            <input id="manual-client-tx-id" placeholder="ClientTransactionId (opcional)"
+              class="manual-input" />
+
+            <button onclick="verifyManualTransaction()" class="btn btn-primary full">🔍 Verificar</button>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ✅ MISMO TOKEN QUE app.js (NO lo publiques)
+    const PAYPHONE_CONFIG = {
+      token: 'JJInUs6pSlUXgomnuVGuqX4cumyAbNLN4n6_PFNaRRb8b0t3-X3XnJwgxyK1rfcAc6uioZNezlSBrkVOL66GgR_r4Va9JsgwP45leqV6t-f55oxpQLMbG9UloA7duDOhELNJtKUo4ovQC8yczmoaKcyNQHnd2zXiKtW_wLu0OwjYmQ3bN3O3fxsZU28Ge3VQ-up9G5w5sJxxQrR97Os5r5fokKwXzUYbtjsn2KskaFfjEL_kxhNq-jQcLXQePklLzz5zS-mQ0h9ZFZK66ypz3pzNlRaJ4CLk0bNjXBjSrpfBWugZ1V8oNqvwGEc0Ew1nNEvjWA',
+      confirmEndpoint: 'https://pay.payphonetodoesposible.com/api/button/V2/Confirm'
+    };
+
+    // DOM
+    const elements = {
+      responseHeader: document.getElementById('response-header'),
+      responseIcon: document.getElementById('response-icon'),
+      responseTitle: document.getElementById('response-title'),
+      responseMessage: document.getElementById('response-message'),
+      detailsContent: document.getElementById('details-content'),
+      logEntries: document.getElementById('log-entries'),
+      jsonContent: document.getElementById('json-content'),
+      actionBtn: document.getElementById('action-btn'),
+      manualForm: document.getElementById('manual-form-container')
+    };
+
+    const badge = document.getElementById('status-badge');
+    let transactionResponse = null;
+
+    function setBadge(type, text) {
+      badge.className = `badge ${type}`;
+      badge.textContent = text;
+    }
+
+    function addLog(type, message, method = '—') {
+      const time = new Date().toLocaleTimeString();
+      const div = document.createElement('div');
+
+      const m = (method || '—').toString().toUpperCase();
+      const methodClass = (m === 'GET') ? 'get' : (m === 'POST') ? 'post' : 'other';
+
+      div.className = 'log-line';
+      div.innerHTML = `
+        <span class="log-time">[${time}]</span>
+        <span class="log-type ${type}">${type.toUpperCase()}</span>
+        <span class="log-method ${methodClass}">${m}</span>
+        <span class="log-msg">${message}</span>
+      `;
+      elements.logEntries.appendChild(div);
+    }
+
+
+    function moneyFromCents(cents) {
+      const v = (Number(cents || 0) / 100);
+      return new Intl.NumberFormat('es-EC', { style: 'currency', currency: 'USD' }).format(v);
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      try {
+        const d = new Date(dateString);
+        return d.toLocaleString('es-EC', {
+          year: 'numeric', month: 'long', day: 'numeric',
+          hour: '2-digit', minute: '2-digit'
+        });
+      } catch {
+        return dateString;
+      }
+    }
+
+    function clearCart() {
+      localStorage.removeItem('techstore_cart');
+      addLog('info', 'Carrito limpiado (techstore_cart)');
+    }
+
+    async function confirmTransaction(transactionId, clientTransactionId) {
+      setBadge('info', '• Verificando');
+      addLog('info', 'Iniciando confirmación...', 'POST');
+      addLog('info', `id: ${transactionId}`, 'POST');
+      addLog('info', `clientTransactionId: ${clientTransactionId}`, 'POST');
+
+      try {
+        const requestBody = {
+          id: parseInt(transactionId, 10),
+          clientTxId: clientTransactionId
+        };
+
+        addLog('info', `Enviando Confirm a: ${PAYPHONE_CONFIG.confirmEndpoint}`, 'POST');
+
+        const response = await fetch(PAYPHONE_CONFIG.confirmEndpoint, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${PAYPHONE_CONFIG.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
+        });
+
+        addLog('info', `HTTP: ${response.status}`, 'POST');
+
+        const data = await response.json();
+        transactionResponse = data;
+
+        // Mostrar JSON
+        elements.jsonContent.textContent = JSON.stringify(data, null, 2);
+
+        if (data.statusCode === 3) {
+          addLog('success', 'Transacción APROBADA', 'POST');
+          showSuccess(data);
+          clearCart();
+        } else if (data.statusCode === 2) {
+          addLog('error', 'Transacción CANCELADA', 'POST');
+          showCancelled(data);
+        } else if (data.errorCode) {
+          addLog('error', data.message || 'Error en PayPhone');
+          showError(data);
+        } else {
+          addLog('error', 'Estado desconocido');
+          showError({ message: 'Estado de transacción desconocido' });
+        }
+
+      } catch (err) {
+        addLog('error', `Conexión fallida: ${err.message}`, 'POST');
+        showError({ message: 'Error de conexión con PayPhone' });
+      }
+    }
+
+    function showSuccess(data) {
+      setBadge('success', '• Aprobado');
+      elements.responseIcon.textContent = '✓';
+      elements.responseTitle.textContent = '¡Pago exitoso!';
+      elements.responseMessage.textContent = 'Tu transacción fue procesada correctamente';
+
+      const amount = data.amount ? moneyFromCents(data.amount) : '$0.00';
+
+      elements.detailsContent.innerHTML = `
+        <div class="kv-row"><span class="kv-label">Estado</span><span class="kv-value">${data.transactionStatus || 'Approved'}</span></div>
+        <div class="kv-row"><span class="kv-label">ID Transacción</span><span class="kv-value">${data.transactionId || data.id || 'N/A'}</span></div>
+        <div class="kv-row"><span class="kv-label">Autorización</span><span class="kv-value">${data.authorizationCode || 'N/A'}</span></div>
+        <div class="kv-row"><span class="kv-label">Referencia</span><span class="kv-value">${data.clientTransactionId || 'N/A'}</span></div>
+        <div class="kv-row"><span class="kv-label">Método</span><span class="kv-value">${data.cardBrand || 'Tarjeta'} ${data.cardType ? `(${data.cardType})` : ''}</span></div>
+        <div class="kv-row"><span class="kv-label">Tarjeta</span><span class="kv-value">**** ${data.lastDigits || '****'}</span></div>
+        <div class="kv-row"><span class="kv-label">Fecha</span><span class="kv-value">${formatDate(data.date)}</span></div>
+        <div class="kv-row"><span class="kv-label">Total</span><span class="kv-value amount">${amount} ${data.currency || 'USD'}</span></div>
+      `;
+
+      elements.actionBtn.style.display = 'inline-flex';
+      elements.actionBtn.textContent = 'Descargar comprobante';
+      elements.actionBtn.onclick = () => downloadReceipt(data);
+    }
+
+    function showCancelled(data) {
+      setBadge('warn', '• Cancelado');
+      elements.responseIcon.textContent = '⚠️';
+      elements.responseTitle.textContent = 'Pago cancelado';
+      elements.responseMessage.textContent = 'La transacción fue cancelada';
+
+      elements.detailsContent.innerHTML = `
+        <div class="kv-row"><span class="kv-label">Estado</span><span class="kv-value">${data.transactionStatus || 'Canceled'}</span></div>
+        <div class="kv-row"><span class="kv-label">Referencia</span><span class="kv-value">${data.clientTransactionId || 'N/A'}</span></div>
+        <div class="kv-row"><span class="kv-label">Mensaje</span><span class="kv-value">${data.message || 'Cancelado por el usuario'}</span></div>
+      `;
+
+      elements.actionBtn.style.display = 'none';
+    }
+
+    function showError(data) {
+      setBadge('error', '• Error');
+      elements.responseIcon.textContent = '✗';
+      elements.responseTitle.textContent = 'Error en el pago';
+      elements.responseMessage.textContent = 'No se pudo procesar la transacción';
+
+      elements.detailsContent.innerHTML = `
+        <div class="kv-row"><span class="kv-label">Mensaje</span><span class="kv-value">${data.message || 'Error desconocido'}</span></div>
+        ${data.errorCode ? `<div class="kv-row"><span class="kv-label">Código</span><span class="kv-value">${data.errorCode}</span></div>` : ''}
+      `;
+
+      // Mostrar formulario manual si quieres intentar con ID copiado
+      elements.manualForm.style.display = 'block';
+      elements.actionBtn.style.display = 'none';
+    }
+
+    function downloadReceipt(data) {
+      const total = data.amount ? moneyFromCents(data.amount) : '$0.00';
+      const receipt = `
+VEHÍCULOstore - COMPROBANTE DE PAGO
+----------------------------------
+Estado: ${data.transactionStatus || 'Approved'}
+Fecha: ${formatDate(data.date)}
+ID Transacción: ${data.transactionId || 'N/A'}
+Autorización: ${data.authorizationCode || 'N/A'}
+Referencia: ${data.clientTransactionId || 'N/A'}
+Método: ${data.cardBrand || 'Tarjeta'} ${data.cardType ? `(${data.cardType})` : ''}
+Tarjeta: **** ${data.lastDigits || '****'}
+Total: ${total} ${data.currency || 'USD'}
+----------------------------------
+Gracias por tu compra. (PayPhone Confirm)
+      `.trim();
+
+      const blob = new Blob([receipt], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `comprobante-${data.transactionId || 'pago'}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      addLog('success', 'Comprobante descargado');
+    }
+
+    function showManualForm() {
+      setBadge('info', '• Manual');
+      elements.responseIcon.textContent = '📝';
+      elements.responseTitle.textContent = 'Verificar pago manualmente';
+      elements.responseMessage.textContent = 'Ingresa el ID de transacción que te muestra PayPhone';
+      elements.manualForm.style.display = 'block';
+
+      elements.detailsContent.innerHTML = `
+        <div class="kv-row"><span class="kv-label">Info</span><span class="kv-value">No llegaron parámetros en la URL</span></div>
+      `;
+    }
+
+    function verifyManualTransaction() {
+      const txId = document.getElementById('manual-tx-id').value.trim();
+      const clientTxIdInput = document.getElementById('manual-client-tx-id').value.trim();
+
+      if (!txId) {
+        alert('Por favor ingresa el ID de transacción de PayPhone');
+        return;
+      }
+
+      const last = localStorage.getItem('lastTransactionId');
+      const finalClientTxId = clientTxIdInput || last || ('MANUAL-' + Date.now());
+
+      elements.manualForm.style.display = 'none';
+      confirmTransaction(txId, finalClientTxId);
+    }
+
+    window.verifyManualTransaction = verifyManualTransaction;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      addLog('info', 'Página de respuesta cargada', 'GET');
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const transactionId = urlParams.get('id');
+      const clientTransactionId = urlParams.get('clientTransactionId');
+
+      if (transactionId && clientTransactionId) {
+        addLog('info', 'Parámetros recibidos desde PayPhone', 'GET');
+        elements.manualForm.style.display = 'none';
+        confirmTransaction(transactionId, clientTransactionId);
+      } else {
+        addLog('error', 'No se recibieron parámetros en la URL', 'GET');
+        showManualForm();
+      }
+    });
+  </script>
+</body>
+</html>
