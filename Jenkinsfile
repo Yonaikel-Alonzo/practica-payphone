@@ -1,10 +1,11 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:18'
-            args '-u root'
-        }
+    agent any
+
+    tools {
+        nodejs "NodeJS" // Configura una instalación de Node.js en Jenkins
+        dockerTool 'dockerTool'  // Cambia el nombre de la herramienta según tu configuración en Jenkins
     }
+
 
     stages {
         stage('Instalar dependencias') {
