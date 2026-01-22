@@ -22,7 +22,11 @@ pipeline {
 
     post {
         success {
+<<<<<<< HEAD
             echo ' Despliegue exitoso zorro jerick'
+=======
+            echo '✅ Despliegue exitosamente bieeeeeen'
+>>>>>>> b81e05dfd98bd6a7dde67e00fc48252498dabd6b
         }
         failure {
             echo ' Error en el pipeline'
