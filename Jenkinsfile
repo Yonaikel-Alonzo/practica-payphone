@@ -1,28 +1,20 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs "NodeJS" // Configura una instalación de Node.js en Jenkins
-        dockerTool 'dockerTool'  // Cambia el nombre de la herramienta según tu configuración en Jenkins
-    }
-
-
     stages {
-        stage('Instalar dependencias') {
+
+        stage('Build Docker Image') {
             steps {
-                sh 'npm install'
+                sh 'docker build -t payphone-app .'
             }
         }
 
-        stage('Build') {
+        stage('Run Docker Container') {
             steps {
-                sh 'npm run build || echo "Build simulado"'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                echo 'Despliegue automático ejecutado correctamente'
+                sh '''
+                docker rm -f payphone || true
+                docker run -d -p 3001:3000 --name payphone payphone-app
+                '''
             }
         }
     }
