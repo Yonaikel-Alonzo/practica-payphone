@@ -22,10 +22,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ Despliegue exitoso'
+            echo ' Despliegue exitoso zorro jerick'
         }
         failure {
-            echo '❌ Error en el pipeline'
+            echo ' Error en el pipeline'
         }
     }
 }
