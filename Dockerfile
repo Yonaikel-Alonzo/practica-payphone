@@ -1,14 +1,12 @@
-# Dockerfile
-FROM node:18
+FROM node:18-alpine
 
-
-# Crear directorio de la aplicación
 WORKDIR /usr/src/app
 
-
-COPY . .
+COPY package*.json ./
 
 RUN npm install -g live-server
+
+COPY . .
 
 EXPOSE 3000
 

@@ -13,16 +13,19 @@ pipeline {
             steps {
                 sh '''
                 docker rm -f payphone || true
+                # Ejecutar el contenedor de la aplicación
                 docker run -d -p 3001:3000 --name payphone payphone-app
                 '''
             }
         }
-        stage('Info') {
-    steps {
-        sh 'docker images'
-        sh 'docker ps'
     }
-}
 
+    post {
+        success {
+            echo '✅ Despliegue exitoso'
+        }
+        failure {
+            echo '❌ Error en el pipeline'
+        }
     }
 }
