@@ -22,7 +22,7 @@ pipeline {
 
     post {
         success {
-            echo '✅ Despliegue exitoso'
+            echo '✅ Despliegue exitosamente bieeeeeen'
         }
         failure {
             echo '❌ Error en el pipeline'
