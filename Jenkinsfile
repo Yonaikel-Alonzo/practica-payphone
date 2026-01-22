@@ -17,5 +17,12 @@ pipeline {
                 '''
             }
         }
+        stage('Info') {
+    steps {
+        sh 'docker images'
+        sh 'docker ps'
+    }
+}
+
     }
 }
