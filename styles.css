@@ -39,7 +39,7 @@ code{ background: rgba(0,0,0,.25); padding: 2px 6px; border-radius: 8px; border:
 .container{
   width: min(var(--max), calc(100% - 40px));
   margin: 0 auto;
-  padding: 22px 0 70px;
+  padding: 25px 0 70px;
 }
 
 .muted{ color: var(--muted); }
@@ -54,7 +54,7 @@ code{ background: rgba(0,0,0,.25); padding: 2px 6px; border-radius: 8px; border:
   justify-content: space-between;
   gap: 12px;
 
-  padding: 14px 20px;
+  padding: 15px 20px;
   backdrop-filter: blur(14px);
   background: rgba(15,19,34,.68);
   border-bottom: 1px solid rgba(255,255,255,.08);
@@ -62,7 +62,7 @@ code{ background: rgba(0,0,0,.25); padding: 2px 6px; border-radius: 8px; border:
 
 .brand{ display:flex; align-items:center; gap: 12px; }
 .logo{
-  width: 42px; height: 42px;
+  width: 45px; height: 45px;
   border-radius: 16px;
   background: linear-gradient(135deg, rgba(255,210,90,.95), rgba(255,210,90,.55));
   box-shadow: 0 12px 30px rgba(0,0,0,.22);
@@ -80,7 +80,7 @@ code{ background: rgba(0,0,0,.25); padding: 2px 6px; border-radius: 8px; border:
 .nav{ display:flex; gap: 14px; }
 .nav a{
   padding: 8px 10px;
-  border-radius: 12px;
+  border-radius: 15px;
   font-size: 14px;
   color: var(--muted);
 }
