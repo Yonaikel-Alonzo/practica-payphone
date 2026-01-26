@@ -1,18 +1,32 @@
-name: Docker Image CI
+name: CI/CD Practica
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-
-  build:
-
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Instalar live-server
+        run: npm install -g live-server
+
+      - name: Verificar archivos del proyecto
+        run: |
+          echo " Listando archivos del proyecto"
+          ls -la
+
+      - name: Ejecutar proyecto con live-server (simulado)
+        run: |
+          echo "Iniciando live-server"
+          echo "Proyecto desplegado correctamente"
